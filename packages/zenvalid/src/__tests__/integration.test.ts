@@ -202,7 +202,7 @@ describe("Integration Tests", () => {
           RATE_LIMIT_CONFIG: json(),
           CORS_ALLOWED_ORIGINS: json(),
           AUTH_JWT_SECRET: str({ min: 16 }),
-          AUTH_JWT_EXPIRES_IN: str({ pattern: /^\d+[hdms]$/ }),
+          AUTH_JWT_EXPIRES_IN: str({ regex: /^\d+[hdms]$/ }),
           CACHE_TTL_SECONDS: num({ int: true, min: 0, max: 86400 }),
           REQUEST_TIMEOUT_MS: num({ int: true, min: 1000, max: 60000 })
         },

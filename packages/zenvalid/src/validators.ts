@@ -249,11 +249,8 @@ export function str<TChoices extends readonly string[] | undefined = undefined>(
   if (options?.max !== undefined) {
     schema = schema.max(options.max);
   }
-  if (options?.regex ?? options?.pattern) {
-    const pattern = options.regex ?? options.pattern;
-    if (pattern) {
-      schema = schema.regex(pattern);
-    }
+  if (options?.regex) {
+    schema = schema.regex(options.regex);
   }
   if (options?.choices && options.choices.length > 0) {
     // Create enum schema for choices
@@ -537,7 +534,7 @@ export function bool(options?: BooleanOptions): z.ZodType<boolean> {
 
 /**
  * Email validator using Zod v4's built-in email validator.
- * Validates email addresses with optional custom patterns.
+ * Validates email addresses with optional custom regex.
  *
  * @param options - Validation options for the email
  * @returns Zod email schema with metadata
@@ -551,11 +548,11 @@ export function bool(options?: BooleanOptions): z.ZodType<boolean> {
  * ```
  *
  * @example
- * Email with custom pattern
+ * Email with custom regex
  * ```ts
  * const env = zenv({
  *   COMPANY_EMAIL: email({
- *     pattern: /@mycompany\.com$/,
+ *     regex: /@mycompany\.com$/,
  *     description: 'Must be a company email address'
  *   })
  * });
@@ -602,10 +599,10 @@ export function email(options?: EmailOptions): z.ZodType<string> {
   // Use Zod v4's built-in email validator function
   let schema: z.ZodType<string> = z.email();
 
-  // Support custom pattern override if provided
-  if (options?.pattern) {
+  // Support custom regex override if provided
+  if (options?.regex) {
     // Apply custom regex pattern instead of default email validation
-    schema = z.string().regex(options.pattern, { message: "Email must match custom pattern" });
+    schema = z.string().regex(options.regex, { message: "Email must match custom regex pattern" });
   }
 
   // Apply environment defaults and attach metadata
@@ -699,9 +696,14 @@ export function url(options?: UrlOptions): z.ZodType<string> {
   if (options?.protocol) {
     schema = schema.refine(
       (val) => {
+        // If protocol is a string, check for exact match (including port)
+        if (typeof options.protocol === "string") {
+          return val.startsWith(`${options.protocol}:`);
+        }
+        // otherwise, protocol is a regex, check for match
         try {
           const u = new URL(val);
-          return options.protocol?.test(u.protocol.replace(":", "")) ?? false;
+          return options.protocol?.test(u.protocol.replace(":", ""));
         } catch {
           return false;
         }
@@ -716,7 +718,12 @@ export function url(options?: UrlOptions): z.ZodType<string> {
       (val) => {
         try {
           const u = new URL(val);
-          return options.hostname?.test(u.hostname) ?? false;
+          // If hostname is a string, check for exact match
+          if (typeof options.hostname === "string") {
+            return u.hostname === options.hostname;
+          }
+          // otherwise, hostname is a regex, check for match
+          return options.hostname?.test(u.hostname);
         } catch {
           return false;
         }

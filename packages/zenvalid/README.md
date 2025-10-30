@@ -346,7 +346,7 @@ const env = zenv({
 
   // HTTPS only
   SECURE_URL: url({
-    protocol: /^https$/,
+    protocol: "https",
     description: "Must use HTTPS"
   }),
 
@@ -367,9 +367,9 @@ const env = zenv({
     default: "admin@example.com"
   }),
 
-  // Custom pattern for corporate emails
+  // Custom regex for corporate emails
   CORP_EMAIL: email({
-    pattern: /@mycompany\.com$/,
+    regex: /@mycompany\.com$/,
     description: "Must be a company email"
   })
 });
@@ -904,11 +904,11 @@ Available to all validators:
 
 | Validator       | Description           | Specific Options                                       |
 | --------------- | --------------------- | ------------------------------------------------------ |
-| `str()`         | String validation     | `choices`, `min`, `max`, `regex`, `pattern`            |
+| `str()`         | String validation     | `choices`, `min`, `max`, `regex`                       |
 | `num()`         | Number validation     | `choices`, `min`, `max`, `int`, `positive`, `negative` |
 | `bool()`        | Boolean validation    | -                                                      |
 | `json()`        | JSON parsing          | `schema` (Zod schema)                                  |
-| `email()`       | Email validation      | `pattern`                                              |
+| `email()`       | Email validation      | `regex`                                                |
 | `url()`         | URL validation        | `protocol`, `hostname`                                 |
 | `host()`        | Host/IP validation    | `allowIP`, `ipv4Only`, `ipv6Only`                      |
 | `port()`        | Port number (1-65535) | `min`, `max`                                           |

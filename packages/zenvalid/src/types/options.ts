@@ -112,11 +112,6 @@ export interface StringOptions<TChoices extends readonly string[] | undefined = 
    * Regular expression pattern for validation.
    */
   regex?: RegExp;
-
-  /**
-   * Pattern for string matching (alias for regex).
-   */
-  pattern?: RegExp;
 }
 
 /**
@@ -169,9 +164,9 @@ export type BooleanOptions = BaseOptions<boolean>;
 export interface EmailOptions extends BaseOptions<string> {
   /**
    * Custom regex pattern for email validation.
-   * If not provided, uses Zod's built-in email validation.
+   * If not provided, uses Zod's built-in email regex validation.
    */
-  pattern?: RegExp;
+  regex?: RegExp;
 }
 
 /**
@@ -180,14 +175,17 @@ export interface EmailOptions extends BaseOptions<string> {
  */
 export interface UrlOptions extends BaseOptions<string> {
   /**
-   * Restrict to specific protocols (e.g., /^https?$/).
+   * Restrict to specific protocols (e.g., "https" or /^https$/).
    */
-  protocol?: RegExp;
+  protocol?: string | RegExp;
 
   /**
-   * Restrict to specific hostnames (e.g., /^example\.com$/).
+   * Restrict to specific hostnames (e.g., "example.com" or /^example\.com$/).
+   * Note that a string value must match the entire hostname exactly (including subdomain or port).
+   * The regex version can be used when you need flexibility for things like partial matches,
+   * multiple domains, subdomains, multiple ports, multiple domains, etc.
    */
-  hostname?: RegExp;
+  hostname?: string | RegExp;
 }
 
 /**

@@ -82,17 +82,11 @@ describe("Validators Module", () => {
       expectValidationError(() => schema.parse("toolong"));
     });
 
-    it("should validate against regex pattern", () => {
+    it("should validate against regex", () => {
       const schema = str({ regex: /^[A-Z]+$/ });
       expect(schema.parse("HELLO")).toBe("HELLO");
       expectValidationError(() => schema.parse("hello"));
       expectValidationError(() => schema.parse("Hello"));
-    });
-
-    it("should validate against pattern option (alias for regex)", () => {
-      const schema = str({ pattern: /^\d+$/ });
-      expect(schema.parse("123")).toBe("123");
-      expectValidationError(() => schema.parse("abc"));
     });
 
     it("should validate enum choices", () => {
@@ -317,8 +311,8 @@ describe("Validators Module", () => {
       });
     });
 
-    it("should accept custom pattern override", () => {
-      const schema = email({ pattern: /^[a-z]+@example\.com$/ });
+    it("should accept custom regex override", () => {
+      const schema = email({ regex: /^[a-z]+@example\.com$/ });
       expect(schema.parse("test@example.com")).toBe("test@example.com");
       expectValidationError(() => schema.parse("Test@example.com")); // Capital letter
       expectValidationError(() => schema.parse("test@other.com")); // Wrong domain
@@ -351,15 +345,25 @@ describe("Validators Module", () => {
       });
     });
 
-    it("should filter by protocol", () => {
-      const schema = url({ protocol: /^https?$/ });
+    it("should filter by protocol with string", () => {
+      const schema = url({ protocol: "https" });
       expect(schema.parse("https://example.com")).toBe("https://example.com");
-      expect(schema.parse("http://example.com")).toBe("http://example.com");
-      expectValidationError(() => schema.parse("ftp://example.com"));
-      expect(true).toBe(true);
+      expectValidationError(() => schema.parse("http://example.com"));
+      expectValidationError(() => schema.parse("example.com"));
+      expectValidationError(() => schema.parse("wss://example.com"));
+      expectValidationError(() => schema.parse("ws://example.com"));
     });
 
-    it("should filter by hostname", () => {
+    it("should filter by protocol with regex", () => {
+      const schema = url({ protocol: /^https$/ });
+      expect(schema.parse("https://example.com")).toBe("https://example.com");
+      expectValidationError(() => schema.parse("http://example.com"));
+      expectValidationError(() => schema.parse("example.com"));
+      expectValidationError(() => schema.parse("wss://example.com"));
+      expectValidationError(() => schema.parse("ws://example.com"));
+    });
+
+    it("should filter by hostname with regex", () => {
       const schema = url({ hostname: /^api\./ });
       expect(schema.parse("https://api.example.com")).toBe("https://api.example.com");
       expectValidationError(() => schema.parse("https://www.example.com"));
