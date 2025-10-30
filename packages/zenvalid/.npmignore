@@ -1,0 +1,8 @@
+.turbo
+coverage
+dist/**/__tests__
+src
+eslint.config.mjs
+vitest.config.ts
+tsconfig.json
+tsconfig.tsbuildinfo

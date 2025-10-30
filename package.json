@@ -1,0 +1,39 @@
+{
+  "name": "zenvalid-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
+    "test": "turbo run test",
+    "tsc:check": "turbo run tsc:check"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*",
+    "@workspace/prettier-config": "workspace:*",
+    "eslint": "9.38.0",
+    "prettier": "3.6.2",
+    "turbo": "2.5.8",
+    "typescript": "5.9.3"
+  },
+  "prettier": "@workspace/prettier-config",
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.10.0",
+      "onFail": "download"
+    }
+  },
+  "workspaces": [
+    "apps/*",
+    "examples/*",
+    "packages/*"
+  ]
+}

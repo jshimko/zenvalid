@@ -1,0 +1,6 @@
+.env*
+.turbo
+coverage
+dist
+node_modules
+tsconfig.tsbuildinfo

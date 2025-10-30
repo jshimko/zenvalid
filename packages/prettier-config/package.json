@@ -1,0 +1,20 @@
+{
+  "name": "@workspace/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "prettier": "3.6.2"
+  },
+  "devDependencies": {
+    "@workspace/eslint-config": "workspace:*"
+  },
+  "exports": {
+    ".": "./index.mjs"
+  }
+}

@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - examples/*
+  - packages/*
+
+minimumReleaseAge: 12
+
+minimumReleaseAgeExclude:
+  - '@eslint/*'
+
+onlyBuiltDependencies:
+  - esbuild
