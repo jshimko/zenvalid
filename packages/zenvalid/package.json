@@ -7,7 +7,6 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf .turbo node_modules dist",
     "dev": "tsc --watch",
     "lint": "eslint . --fix",
     "test": "vitest",

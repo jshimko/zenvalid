@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo run build",
-    "clean": "turbo run clean",
+    "clean": "./scripts/clean-all.sh",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "test": "turbo run test",
