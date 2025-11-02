@@ -1,5 +1,5 @@
 {
-  "name": "zenvalid-monorepo",
+  "name": "zenvalidate-monorepo",
   "private": true,
   "scripts": {
     "dev": "turbo dev",

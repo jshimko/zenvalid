@@ -351,7 +351,7 @@ function validateSpecs(
  * @example
  * Basic Usage
  * ```ts
- * import { zenv, str, num, bool } from 'zenvalid';
+ * import { zenv, str, num, bool } from 'zenvalidate';
  *
  * const env = zenv({
  *   NODE_ENV: str({ choices: ['development', 'production', 'test'] }),

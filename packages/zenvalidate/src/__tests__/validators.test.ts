@@ -1,6 +1,6 @@
 /**
  * @module validators.test
- * @description Comprehensive tests for all 26 validators in `zenvalid`
+ * @description Comprehensive tests for all 26 validators in `zenvalidate`
  */
 import { z } from "zod/v4";
 

@@ -1,6 +1,6 @@
 /**
  * @module types.test-d
- * @description Type definition tests for `zenvalid`
+ * @description Type definition tests for `zenvalidate`
  * These tests verify TypeScript type inference and compile-time behavior.
  * They don't run at runtime but ensure type safety at compile time.
  */

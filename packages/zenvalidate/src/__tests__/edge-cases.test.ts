@@ -1,6 +1,6 @@
 /**
  * @module edge-cases.test
- * @description Edge cases and stress tests for `zenvalid`
+ * @description Edge cases and stress tests for `zenvalidate`
  */
 import { z } from "zod/v4";
 

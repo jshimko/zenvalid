@@ -10,7 +10,7 @@
  *
  * @example Basic environment detection
  * ```ts
- * import { runtime } from 'zenvalid';
+ * import { runtime } from 'zenvalidate';
  *
  * if (runtime.isServer) {
  *   // Server-only code

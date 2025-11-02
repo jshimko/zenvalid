@@ -1,8 +1,8 @@
-# zenvalid
+# zenvalidate (Zod + Env + Validate)
 
 **Type-safe environment variable validation for TypeScript applications**
 
-A lightweight, zero-dependency (except Zod) library that provides bulletproof environment variable validation with full TypeScript support, client/server separation, and runtime safety for both Node.js and browser environments.
+A lightweight, zero-dependency (except Zod v4) library that provides bulletproof environment variable validation with full TypeScript support, client/server separation, and runtime safety for both Node.js and browser environments.
 
 [![Zod](https://img.shields.io/badge/Zod-v4-purple)](https://zod.dev/)
 [![Node](https://img.shields.io/badge/Node-22%2B-brightgreen)](https://nodejs.org/)
@@ -23,17 +23,17 @@ A lightweight, zero-dependency (except Zod) library that provides bulletproof en
 ## 📦 Installation
 
 ```bash
-npm install zenvalid zod@^4
+npm install zenvalidate zod@4
 # or
-pnpm add zenvalid zod@^4
+pnpm add zenvalidate zod@4
 # or
-yarn add zenvalid zod@^4
+yarn add zenvalidate zod@4
 ```
 
 ## 🚀 Quick Start
 
 ```typescript
-import { bool, num, str, url, zenv } from "zenvalid";
+import { bool, num, str, url, zenv } from "zenvalidate";
 
 // Define and validate your environment variables
 const env = zenv({
@@ -93,7 +93,7 @@ import {
   url,
   uuid
   // ... and 20+ more
-} from "zenvalid";
+} from "zenvalidate";
 ```
 
 ### Client/Server Separation
@@ -485,7 +485,7 @@ const env = zenv({
 Create domain-specific validators with the `makeValidator` function:
 
 ```typescript
-import { makeValidator } from "zenvalid";
+import { makeValidator } from "zenvalidate";
 
 // Semantic version validator
 const semver = makeValidator<string>({
@@ -660,7 +660,7 @@ env.FEATURES.map((f) => f.toUpperCase()); // ✅ array methods available
 Extract types from validators and specs:
 
 ```typescript
-import type { InferValidatorType, InferZenvType } from "zenvalid";
+import type { InferValidatorType, InferZenvType } from "zenvalidate";
 
 // Get type from a single validator
 const portValidator = port({ default: 3000 });
@@ -681,7 +681,7 @@ type EnvType = InferZenvType<typeof spec>;
 The `runtime` object provides environment detection utilities:
 
 ```typescript
-import { runtime } from "zenvalid";
+import { runtime } from "zenvalidate";
 
 // Environment detection
 if (runtime.isServer) {
@@ -799,7 +799,7 @@ const port = parseInt(process.env.PORT || '3000');
 const debug = process.env.DEBUG === 'true';
 
 // After (zenv)
-import { zenv, num, bool } from 'zenvalid';
+import { zenv, num, bool } from 'zenvalidate';
 
 const env = zenv({
   PORT: num({ default: 3000 }),
@@ -822,7 +822,7 @@ const env = cleanEnv(process.env, {
 });
 
 // After (zenv)
-import { zenv, port, str } from 'zenvalid';
+import { zenv, port, str } from 'zenvalidate';
 
 const env = zenv({
   PORT: port({ default: 3000 }),

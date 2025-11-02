@@ -1,6 +1,6 @@
 /**
  * @module test-utils
- * @description Shared test utilities for `zenvalid` test suite
+ * @description Shared test utilities for `zenvalidate` test suite
  */
 import type { z } from "zod/v4";
 

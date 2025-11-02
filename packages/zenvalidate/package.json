@@ -1,7 +1,7 @@
 {
-  "name": "zenvalid",
-  "version": "1.0.0",
-  "private": true,
+  "name": "zenvalidate",
+  "version": "0.1.0",
+  "public": true,
   "type": "module",
   "scripts": {
     "build": "zshy",
