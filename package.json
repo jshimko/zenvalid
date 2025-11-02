@@ -12,7 +12,7 @@
     "tsc:check": "turbo run tsc:check",
     "checks": "pnpm build && pnpm lint && pnpm tsc:check && pnpm test",
     "checks:full": "pnpm clean && pnpm i && pnpm checks",
-    "readme:sync": "cp README.md packages/zenvalid/README.md",
+    "readme:sync": "cp README.md packages/zenvalidate/README.md",
     "changeset": "changeset",
     "version": "changeset version",
     "release": "changeset publish"
