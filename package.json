@@ -18,7 +18,7 @@
     "release": "changeset publish",
     "deps:check": "./scripts/updateAllDeps.sh ncu -t minor",
     "deps:update": "./scripts/updateAllDeps.sh",
-    "deps:check:major": "./scripts/updateAllDeps.sh ncu -t minor",
+    "deps:check:major": "./scripts/updateAllDeps.sh ncu -t major",
     "deps:update:major": "./scripts/updateAllDeps.sh ncu -u"
   },
   "devDependencies": {
