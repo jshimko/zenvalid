@@ -24,7 +24,7 @@ importers:
         specifier: 9.39.1
         version: 9.39.1
       node:
-        specifier: runtime:24.11.0
+        specifier: runtime:^24.11.0
         version: runtime:24.11.0
       prettier:
         specifier: 3.6.2
