@@ -157,8 +157,10 @@ describe("Core Module - zenv()", () => {
 
       expect(reporterMock).toHaveBeenCalled();
       const call = reporterMock.mock.calls[0];
-      expect(call[0]).toBeInstanceOf(Array); // errors array
-      expect(call[1]).toBeDefined(); // env object
+      if (call) {
+        expect(call[0]).toBeInstanceOf(Array); // errors array
+        expect(call[1]).toBeDefined(); // env object
+      }
     });
   });
 

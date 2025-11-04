@@ -65,7 +65,7 @@ export type IsClientExposed<O> = O extends { client: { expose: true } } ? true :
 /**
  * Extract the transform function return type from client config.
  */
-export type ExtractTransformType<C> = C extends { transform: (value: infer I) => infer O } ? O : never;
+export type ExtractTransformType<C> = C extends { transform: (value: unknown) => infer O } ? O : never;
 
 /**
  * Infer the client-side type for a value.
@@ -307,11 +307,13 @@ export type Discriminate<T, K extends keyof T> = T extends object
  * ```
  */
 export interface ValidatorWithMetadata<T = unknown> extends z.ZodType<T> {
-  _metadata?: {
-    client?: ClientConfig<T>;
-    autoExposed?: boolean;
-    serverOnly?: boolean;
-  };
+  _metadata?:
+    | {
+        client?: ClientConfig<T> | undefined;
+        autoExposed?: boolean | undefined;
+        serverOnly?: boolean | undefined;
+      }
+    | undefined;
 }
 
 /**
@@ -323,10 +325,10 @@ export type MetadataKey = z.ZodType | object;
  * Type for the metadata storage value.
  */
 export interface SchemaMetadata<T = unknown> {
-  options?: BaseOptions<T>;
-  client?: ClientConfig<T>;
-  autoExposed?: boolean;
-  serverOnly?: boolean;
+  options?: BaseOptions<T> | undefined;
+  client?: ClientConfig<T> | undefined;
+  autoExposed?: boolean | undefined;
+  serverOnly?: boolean | undefined;
 }
 
 /**

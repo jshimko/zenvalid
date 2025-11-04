@@ -254,9 +254,7 @@ export function str<TChoices extends readonly string[] | undefined = undefined>(
   }
   if (options?.choices && options.choices.length > 0) {
     // Create enum schema for choices
-    const [first, ...rest] = options.choices;
-    // Type-safe enum creation
-    let enumSchema = z.enum([first, ...rest]);
+    let enumSchema = z.enum(options.choices);
     // Apply defaults before returning
     enumSchema = applyEnvironmentDefaults(enumSchema, options as BaseOptions<string>) as typeof enumSchema;
     attachMetadata(enumSchema, options as BaseOptions<string>);
@@ -1320,11 +1318,13 @@ export function datetime(
     precision?: number;
   }
 ): z.ZodType<string> {
-  let schema: z.ZodType<string> = z.iso.datetime({
-    offset: options?.offset,
-    local: options?.local,
-    precision: options?.precision
-  });
+  // Build options object only with defined properties to satisfy exactOptionalPropertyTypes
+  const datetimeOptions: { offset?: boolean; local?: boolean; precision?: number } = {};
+  if (options?.offset !== undefined) datetimeOptions.offset = options.offset;
+  if (options?.local !== undefined) datetimeOptions.local = options.local;
+  if (options?.precision !== undefined) datetimeOptions.precision = options.precision;
+
+  let schema: z.ZodType<string> = z.iso.datetime(Object.keys(datetimeOptions).length > 0 ? datetimeOptions : undefined);
 
   schema = applyEnvironmentDefaults(schema, options);
   attachMetadata(schema, options);
@@ -1441,7 +1441,11 @@ export function isoTime(options?: BaseOptions<string> & { precision?: number }):
 
 // Implementation
 export function isoTime(options?: BaseOptions<string> & { precision?: number }): z.ZodType<string> {
-  let schema: z.ZodType<string> = z.iso.time({ precision: options?.precision });
+  // Build options object only with defined properties to satisfy exactOptionalPropertyTypes
+  const timeOptions: { precision?: number } = {};
+  if (options?.precision !== undefined) timeOptions.precision = options.precision;
+
+  let schema: z.ZodType<string> = z.iso.time(Object.keys(timeOptions).length > 0 ? timeOptions : undefined);
   schema = applyEnvironmentDefaults(schema, options);
   attachMetadata(schema, options);
   return schema;
