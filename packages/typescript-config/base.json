@@ -9,14 +9,14 @@
 
     "strict": true,
     "alwaysStrict": true,
-    "noUncheckedIndexedAccess": false,
+    "noUncheckedIndexedAccess": true,
 
     "types": [],
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": false,
+    "noUnusedParameters": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,

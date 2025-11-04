@@ -254,9 +254,7 @@ export function str<TChoices extends readonly string[] | undefined = undefined>(
   }
   if (options?.choices && options.choices.length > 0) {
     // Create enum schema for choices
-    const [first, ...rest] = options.choices;
-    // Type-safe enum creation
-    let enumSchema = z.enum([first, ...rest]);
+    let enumSchema = z.enum(options.choices);
     // Apply defaults before returning
     enumSchema = applyEnvironmentDefaults(enumSchema, options as BaseOptions<string>) as typeof enumSchema;
     attachMetadata(enumSchema, options as BaseOptions<string>);

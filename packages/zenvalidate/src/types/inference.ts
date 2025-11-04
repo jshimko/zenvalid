@@ -65,7 +65,7 @@ export type IsClientExposed<O> = O extends { client: { expose: true } } ? true :
 /**
  * Extract the transform function return type from client config.
  */
-export type ExtractTransformType<C> = C extends { transform: (value: infer I) => infer O } ? O : never;
+export type ExtractTransformType<C> = C extends { transform: (value: unknown) => infer O } ? O : never;
 
 /**
  * Infer the client-side type for a value.
