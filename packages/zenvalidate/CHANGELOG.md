@@ -1,5 +1,11 @@
 # zenvalidate
 
+## 1.2.0
+
+### Minor Changes
+
+- Documentation improvements and author/repo info in package.json
+
 ## 1.1.0
 
 ### Minor Changes
