@@ -90,6 +90,7 @@ describe("SSR injection and environment detection", () => {
   it("should handle transition from SSR to client hydration", () => {
     const originalWindow = global.window;
     const originalProcess = global.process;
+    const originalEnv = process.env;
 
     // Stage 1: Server-side rendering
     process.env = {
@@ -120,6 +121,7 @@ describe("SSR injection and environment detection", () => {
     // Restore
     global.window = originalWindow;
     global.process = originalProcess;
+    process.env = originalEnv;
   });
 
   it("should handle various __ZENV_CLIENT__ data types", () => {
