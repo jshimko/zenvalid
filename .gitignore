@@ -1,8 +1,9 @@
+.bak
+.claude
 .env*
 .turbo
+CLAUDE.md
 coverage
 dist
 node_modules
 tsconfig.tsbuildinfo
-CLAUDE.md
-.claude
