@@ -27,21 +27,21 @@
     "release": "changeset publish",
     "deps:check": "./scripts/updateAllDeps.sh ncu -t minor",
     "deps:update": "./scripts/updateAllDeps.sh",
-    "deps:check:major": "./scripts/updateAllDeps.sh ncu -t major",
+    "deps:check:major": "./scripts/updateAllDeps.sh ncu",
     "deps:update:major": "./scripts/updateAllDeps.sh ncu -u"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",
-    "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "@trivago/prettier-plugin-sort-imports": "6.0.0",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/prettier-config": "workspace:*",
     "eslint": "9.39.1",
     "prettier": "3.6.2",
-    "turbo": "2.6.0",
+    "turbo": "2.6.1",
     "typescript": "5.9.3"
   },
   "prettier": "@workspace/prettier-config",
-  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd",
+  "packageManager": "pnpm@10.23.0",
   "engines": {
     "node": ">=22",
     "pnpm": ">=10"

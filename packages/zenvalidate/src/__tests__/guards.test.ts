@@ -335,12 +335,12 @@ describe("Type Guards Module", () => {
 
     describe("hasBaseOptions", () => {
       it("should validate objects with BaseOptions structure", () => {
-        expect(hasBaseOptions({ default: "value" })).toBe(true);
-        expect(hasBaseOptions({ devDefault: "dev" })).toBe(true);
-        expect(hasBaseOptions({ testDefault: "test" })).toBe(true);
-        expect(hasBaseOptions({ description: "desc" })).toBe(true);
-        expect(hasBaseOptions({ example: "example" })).toBe(true);
-        expect(hasBaseOptions({ client: { expose: true } })).toBe(true);
+        expect(hasBaseOptions({ options: { default: "value" } })).toBe(true);
+        expect(hasBaseOptions({ options: { devDefault: "dev" } })).toBe(true);
+        expect(hasBaseOptions({ options: { testDefault: "test" } })).toBe(true);
+        expect(hasBaseOptions({ options: { description: "desc" } })).toBe(true);
+        expect(hasBaseOptions({ options: { example: "example" } })).toBe(true);
+        expect(hasBaseOptions({ options: { client: { expose: true } } })).toBe(true);
       });
 
       it("should accept empty objects", () => {

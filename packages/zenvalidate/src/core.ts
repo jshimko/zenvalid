@@ -98,53 +98,56 @@ function createProtectiveProxy<T extends Record<string, unknown>>(
         return target[prop as keyof T];
       }
 
-      // If property doesn't exist and strict mode is enabled
-      if (!propExists && strict) {
-        throw new ReferenceError(`[zenv] Environment variable not found: ${propName}`);
-      }
-
       // On client, check if this variable is exposed
       if (runtime.isClient) {
         const meta = metadata.get(propName);
 
-        // Check if variable is server-only (either by prefix or explicit setting)
-        const isServerOnly = meta?.serverOnly ?? false;
-        const isExposed = !isServerOnly && (meta?.client?.expose ?? meta?.autoExposed);
+        // If we have metadata for this property, it was defined in specs
+        if (meta) {
+          // Check if variable is server-only (either by prefix or explicit setting)
+          const isServerOnly = meta.serverOnly ?? false;
+          const isExposed = !isServerOnly && (meta.client?.expose ?? meta.autoExposed);
 
-        if (!isExposed) {
-          // Handle server-only variable access on client
-          if (onClientAccessError === "throw") {
-            throw new Error(`Cannot access server-only environment variable '${propName}' on client`);
-          } else if (onClientAccessError === "warn" && runtime.isDevelopment) {
-            console.warn(`[zenv] Warning: Attempted to access server-only variable "${propName}" on client`);
+          if (!isExposed) {
+            // Handle server-only variable access on client
+            if (onClientAccessError === "throw") {
+              throw new Error(`Cannot access server-only environment variable '${propName}' on client`);
+            } else if (onClientAccessError === "warn" && runtime.isDevelopment) {
+              console.warn(`[zenv] Warning: Attempted to access server-only variable "${propName}" on client`);
+            }
+            // Return undefined for server-only vars on client
+            return undefined;
           }
-          // Return undefined for server-only vars on client
-          return undefined;
-        }
 
-        // Get the value from target
-        let value = propExists ? target[prop as keyof T] : undefined;
+          // Get the value from target
+          let value = propExists ? target[prop as keyof T] : undefined;
 
-        // Check if the value was explicitly set in the raw environment
-        // If not, and we have client-specific defaults, use those instead
-        const wasExplicitlySet = (rawEnv as Record<string, unknown> | undefined) && propName in rawEnv;
+          // Check if the value was explicitly set in the raw environment
+          // If not, and we have client-specific defaults, use those instead
+          const wasExplicitlySet = (rawEnv as Record<string, unknown> | undefined) && propName in rawEnv;
 
-        if (!wasExplicitlySet && meta?.client) {
-          const { default: clientDefault, devDefault: clientDevDefault } = meta.client;
+          if (!wasExplicitlySet && meta.client) {
+            const { default: clientDefault, devDefault: clientDevDefault } = meta.client;
 
-          // Apply client environment-specific default if available
-          if (runtime.isDevelopment && clientDevDefault !== undefined) {
-            value = clientDevDefault as T[keyof T];
-          } else if (clientDefault !== undefined) {
-            value = clientDefault as T[keyof T];
+            // Apply client environment-specific default if available
+            if (runtime.isDevelopment && clientDevDefault !== undefined) {
+              value = clientDevDefault as T[keyof T];
+            } else if (clientDefault !== undefined) {
+              value = clientDefault as T[keyof T];
+            }
           }
-        }
 
-        // Apply client transform if specified
-        if (value !== undefined && meta?.client?.transform !== undefined) {
-          return meta.client.transform(value);
+          // Apply client transform if specified
+          if (value !== undefined && meta.client?.transform !== undefined) {
+            return meta.client.transform(value);
+          }
+          return value;
         }
-        return value;
+      }
+
+      // If property doesn't exist and strict mode is enabled
+      if (!propExists && strict) {
+        throw new ReferenceError(`[zenv] Environment variable not found: ${propName}`);
       }
 
       return target[prop as keyof T];

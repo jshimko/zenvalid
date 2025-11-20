@@ -2,6 +2,8 @@
  * @module core.test
  * @description Tests for the core zenv() function and its features
  */
+import type { MockInstance } from "vitest";
+
 import { zenv } from "../core";
 import { ZenvError } from "../errors";
 import { bool, email, json, num, port, str, url } from "../validators";
@@ -10,7 +12,7 @@ import { createMockEnv, mockProcessEnv, mockRuntime, suppressConsole } from "./t
 describe("Core Module - zenv()", () => {
   let envMock: ReturnType<typeof mockProcessEnv>;
   let consoleMock: ReturnType<typeof suppressConsole>;
-  let processExitSpy: unknown;
+  let processExitSpy: MockInstance<(code?: number | string | null) => never> | null;
 
   beforeEach(() => {
     envMock = mockProcessEnv(createMockEnv());
@@ -24,9 +26,7 @@ describe("Core Module - zenv()", () => {
   afterEach(() => {
     envMock.restore();
     consoleMock.restore();
-    if (processExitSpy) {
-      (processExitSpy as ReturnType<typeof vi.spyOn>).mockRestore();
-    }
+    processExitSpy?.mockRestore();
   });
 
   describe("Basic Functionality", () => {
