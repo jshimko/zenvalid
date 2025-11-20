@@ -36,7 +36,7 @@ const schemaMetadata = new WeakMap<z.ZodType, SchemaMetadata>();
  * @param schema The Zod schema to attach metadata to
  * @param options The options containing metadata
  */
-function attachMetadata<T>(schema: z.ZodType<T>, options?: BaseOptions<T>): void {
+export function attachMetadata<T>(schema: z.ZodType<T>, options?: BaseOptions<T>): void {
   if (options) {
     const metadata: SchemaMetadata = {
       options: options as BaseOptions<unknown>,

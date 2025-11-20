@@ -1,12 +1,62 @@
 /**
  * @module types/guards
- * @description Type guard functions for the Zenv package.
- * This module provides type-safe runtime type checking without any type assertions.
- * Every function here is a proper type predicate that TypeScript understands.
+ * @description Type guard functions
  */
 import { z } from "zod/v4";
 
 import type { BaseOptions, ClientConfig } from "./options";
+
+// Zod schemas for type validation
+const ClientConfigSchema = z
+  .object({
+    expose: z.boolean(),
+    transform: z.function().optional(),
+    default: z.unknown().optional(),
+    devDefault: z.unknown().optional()
+  })
+  .strict();
+
+const BaseOptionsSchema = z
+  .object({
+    default: z.unknown().optional(),
+    devDefault: z.unknown().optional(),
+    testDefault: z.unknown().optional(),
+    description: z.string().optional(),
+    example: z.unknown().optional(),
+    client: ClientConfigSchema.optional()
+  })
+  .strict();
+
+const HasBaseOptionsSchema = z
+  .object({
+    options: BaseOptionsSchema.optional()
+  })
+  .strict();
+
+// Schema for Zod v4 internal structure validation
+const ZodSchemaDefSchema = z
+  .object({
+    type: z.string()
+  })
+  .loose();
+
+const ZodSchemaStructureSchema = z
+  .object({
+    _def: ZodSchemaDefSchema.optional(),
+    def: ZodSchemaDefSchema.optional()
+  })
+  .loose()
+  .refine((obj) => obj._def !== undefined || obj.def !== undefined, {
+    message: "Must have either _def or def property"
+  });
+
+// Schema for error-like objects
+const ErrorLikeSchema = z
+  .object({
+    name: z.string(),
+    message: z.string()
+  })
+  .loose();
 
 /**
  * Check if a value is a Zod schema.
@@ -24,23 +74,7 @@ import type { BaseOptions, ClientConfig } from "./options";
  * ```
  */
 export function isZodSchema(value: unknown): value is z.ZodType {
-  if (value === null || value === undefined || typeof value !== "object") {
-    return false;
-  }
-  const obj = value as Record<string, unknown>;
-
-  // Zod v4 uses both 'def' and '_def' properties
-  const hasDef =
-    ("_def" in obj && typeof obj._def === "object" && obj._def !== null) ||
-    ("def" in obj && typeof obj.def === "object" && obj.def !== null);
-
-  if (!hasDef) {
-    return false;
-  }
-
-  // Zod v4 uses 'type' instead of 'typeName' in the def object
-  const def = (obj._def ?? obj.def) as Record<string, unknown>;
-  return "type" in def && typeof def.type === "string";
+  return ZodSchemaStructureSchema.safeParse(value).success;
 }
 
 /**
@@ -180,33 +214,7 @@ export function hasProperty<K extends PropertyKey>(value: unknown, property: K):
  * ```
  */
 export function hasBaseOptions(value: unknown): value is { options?: BaseOptions } {
-  if (!isObject(value)) return false;
-
-  // Options property is optional, so if it doesn't exist, it's still valid
-  if (!("options" in value)) return true;
-
-  const options = (value as { options: unknown }).options;
-
-  // Options can be undefined
-  if (options === undefined) return true;
-
-  // If options exists but is not an object, it's invalid
-  if (!isObject(options)) return false;
-
-  // Check that all properties are valid BaseOptions properties
-  const validKeys = new Set(["default", "devDefault", "testDefault", "description", "example", "client"]);
-
-  for (const key of Object.keys(options)) {
-    if (!validKeys.has(key)) return false;
-  }
-
-  // If client exists, validate it
-  if ("client" in options) {
-    const client = (options as { client: unknown }).client;
-    if (!isClientConfig(client)) return false;
-  }
-
-  return true;
+  return HasBaseOptionsSchema.safeParse(value).success;
 }
 
 /**
@@ -224,24 +232,7 @@ export function hasBaseOptions(value: unknown): value is { options?: BaseOptions
  * ```
  */
 export function isClientConfig(value: unknown): value is ClientConfig {
-  if (!isObject(value)) return false;
-
-  const config = value;
-
-  // expose is required and must be boolean
-  if (!("expose" in config) || !isBoolean(config.expose)) {
-    return false;
-  }
-
-  // transform is optional but must be function if present
-  if ("transform" in config && typeof config.transform !== "function") {
-    return false;
-  }
-
-  // default and devDefault are optional
-  // No type checking needed as they can be any type
-
-  return true;
+  return ClientConfigSchema.safeParse(value).success;
 }
 
 /**
@@ -325,7 +316,16 @@ export function isEnvValue(value: unknown): value is string | undefined {
  */
 export function ensureString(value: unknown): string {
   if (isString(value)) return value;
-  if (isNumber(value)) return value.toString();
+  if (isNumber(value)) {
+    // Handle special number values
+    if (isNaN(value)) {
+      return "NaN";
+    }
+    if (!isFinite(value)) {
+      return "null"; // Convert Infinity and -Infinity to "null"
+    }
+    return value.toString();
+  }
   if (isBoolean(value)) return value.toString();
   if (isNullOrUndefined(value)) {
     throw new Error("Cannot convert null or undefined to string");
@@ -434,7 +434,7 @@ export function ensureBoolean(value: unknown): boolean {
  * ```
  */
 export function isZodError(error: unknown): error is z.ZodError {
-  return error instanceof z.ZodError || (isObject(error) && "issues" in error && Array.isArray((error as { issues: unknown }).issues));
+  return error instanceof z.ZodError;
 }
 
 /**
@@ -455,16 +455,10 @@ export function isZodError(error: unknown): error is z.ZodError {
  * ```
  */
 export function isError(error: unknown): error is Error {
-  // Check instanceof Error first (most common case)
   if (error instanceof Error) return true;
 
-  // Check for error-like objects (has name and message properties)
-  if (isObject(error)) {
-    const errorObj = error;
-    return typeof errorObj.name === "string" && typeof errorObj.message === "string";
-  }
-
-  return false;
+  // Check for error-like objects using Zod schema
+  return ErrorLikeSchema.safeParse(error).success;
 }
 
 /**
@@ -483,11 +477,11 @@ export function isError(error: unknown): error is Error {
  * ```
  */
 export function getErrorMessage(error: unknown): string {
-  if (isError(error)) return error.message;
-  if (isString(error)) return error;
   if (isZodError(error)) {
     return error.issues.map((issue) => issue.message).join(", ");
   }
+  if (isError(error)) return error.message;
+  if (isString(error)) return error;
   // Convert other types to string
   if (error === null) return "null";
   if (error === undefined) return "undefined";
